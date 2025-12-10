@@ -2,7 +2,7 @@
 
 namespace HttPipe
 {
-	public static class HttpPipelineFactory
+	public static class HttPipe
 	{
 		private static TPipeline Create<TPipeline, TBuilder>(TBuilder builder, Action<TBuilder> action)
 			where TBuilder : IHttpPipelineFactory<TPipeline>
