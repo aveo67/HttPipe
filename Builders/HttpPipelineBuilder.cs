@@ -24,6 +24,8 @@ namespace HttPipe
 
 		private IResponseStep<TResult> _deserializationStep;
 
+		private bool _isCorrect = false;
+
 		private readonly LinkedList<IRequestStep> _requestSteps = new LinkedList<IRequestStep>();
 
 		private readonly LinkedList<IResponseStep<TResult>> _responseSteps = new LinkedList<IResponseStep<TResult>>();
@@ -38,6 +40,12 @@ namespace HttPipe
 		{
 			if (step == null)
 				throw new ArgumentNullException("Step must not be null");
+		}
+
+		protected void AssertBuildingDone()
+		{
+			if (!_isCorrect)
+				throw new HttpPipelineBuilderException("Building was not completed");
 		}
 
 		protected T AttachStepTo<TStep, T>(TStep step, LinkedList<TStep> destination, T result)
@@ -117,25 +125,30 @@ namespace HttPipe
 			=> AttachStepTo(step, _requestSteps, AfterDeserializationBuildingStage);
 
 		public TAfterDeserializationBuildingStage AttachRequestStep(Func<HttpRequestMessage, CancellationToken, Task> stepAction)
-			 => AttachStepTo(new RequestStepAction(stepAction), _requestSteps, AfterDeserializationBuildingStage);
+			 => AttachRequestStep(new RequestStepAction(stepAction));
 
 		public TAfterDeserializationBuildingStage AttachResponseStep(IResponseStep<TResult> step)
 			=> AttachStepTo(step, _responseSteps, AfterDeserializationBuildingStage);
 
 		public TAfterDeserializationBuildingStage AttachResponseStep(Func<TResult, HttpRequestMessage, HttpResponseMessage, CancellationToken, Task<TResult>> action)
-			=> AttachStepTo(new ResponseStepAction<TResult>(action), _responseSteps, AfterDeserializationBuildingStage);
+			=> AttachResponseStep(new ResponseStepAction<TResult>(action));
 
 		public TAfterAuthenticationBuildingStage WithAuthenticationStep(IRequestStep authenticationStep)
 			=> SetStepTo(authenticationStep, ref _authenticationStep, AfterAuthenticationBuildingStage);
 
 		public TAfterAuthenticationBuildingStage WithAuthenticationStep(Func<HttpRequestMessage, CancellationToken, Task> authenticationAction)
-			=> SetStepTo(new RequestStepAction(authenticationAction), ref _authenticationStep, AfterAuthenticationBuildingStage);
+			=> WithAuthenticationStep(new RequestStepAction(authenticationAction));
 
 		public TAfterDeserializationBuildingStage WithDeserializationStep(IResponseStep<TResult> deserializationStep)
-			=> SetStepTo(deserializationStep, ref _deserializationStep, AfterDeserializationBuildingStage);
+		{
+			_isCorrect = true;
+
+			return SetStepTo(deserializationStep, ref _deserializationStep, AfterDeserializationBuildingStage);
+		}
+			
 
 		public TAfterDeserializationBuildingStage WithDeserializationStep(Func<TResult, HttpRequestMessage, HttpResponseMessage, CancellationToken, Task<TResult>> deserializationAction)
-			=> SetStepTo(new ResponseStepAction<TResult>(deserializationAction), ref _deserializationStep, AfterDeserializationBuildingStage);
+			=> WithDeserializationStep(new ResponseStepAction<TResult>(deserializationAction));
 
 		public TAfterAuthenticationBuildingStage WithoutAuthentication()
 			=> SetStepTo(new EmptyRequestStep(), ref _authenticationStep, AfterAuthenticationBuildingStage);
@@ -195,6 +208,8 @@ namespace HttPipe
 
 		protected HttpPipeline<TResult> CreatePipeline()
 		{
+			AssertBuildingDone();
+
 			return new HttpPipeline<TResult>(
 				CreateHttpClient(),
 				CreateHttpRequestFactory(),
@@ -217,13 +232,13 @@ namespace HttPipe
 			=> AttachStepTo(step, _requestSteps, AfterDeserializationBuildingStage);
 
 		public TAfterDeserializationBuildingStage AttachRequestStep(Func<TPayload, HttpRequestMessage, CancellationToken, Task> stepAction)
-			=> AttachStepTo(new RequestStepAction<TPayload>(stepAction), _requestSteps, AfterDeserializationBuildingStage);
+			=> AttachRequestStep(new RequestStepAction<TPayload>(stepAction));
 
 		public TAfterDeserializationBuildingStage AttachResponseStep(IResponseStep<TPayload, TResult> step)
 			=> AttachStepTo(step, _responseSteps, AfterDeserializationBuildingStage);
 
 		public TAfterDeserializationBuildingStage AttachResponseStep(Func<TPayload, TResult, HttpRequestMessage, HttpResponseMessage, CancellationToken, Task<TResult>> action)
-			=> AttachStepTo(new ResponseStepAction<TPayload, TResult>(action), _responseSteps, AfterDeserializationBuildingStage);
+			=> AttachResponseStep(new ResponseStepAction<TPayload, TResult>(action));
 
 		public IDeserializationBuildingStage<TResult, TAfterDeserializationBuildingStage> WithoutQuery()
 			=> WithQueryConstructionStep(new EmptyQueryConstructionStep<TPayload>());
@@ -241,7 +256,7 @@ namespace HttPipe
 			=> SetStepTo(serializationStep, ref _serializationStep, this);
 
 		public IDeserializationBuildingStage<TResult, TAfterDeserializationBuildingStage> WithSerializationStep(Func<TPayload, HttpRequestMessage, CancellationToken, Task> serializationAction)
-			=> SetStepTo(new RequestStepAction<TPayload>(serializationAction), ref _serializationStep, this);
+			=> WithSerializationStep(new RequestStepAction<TPayload>(serializationAction));
 
 		protected IRequestStep<TPayload> GetSerializationStep()
 		{
@@ -259,6 +274,8 @@ namespace HttPipe
 
 		protected new HttpPipeline<TPayload, TResult> CreatePipeline()
 		{
+			AssertBuildingDone();
+
 			return new HttpPipeline<TPayload, TResult>(
 				CreateHttpClient(),
 				CreateHttpRequestFactory(),
@@ -286,13 +303,13 @@ namespace HttPipe
 			=> AttachStepTo(step, _requestSteps, AfterDeserializationBuildingStage);
 
 		public TAfterDeserializationBuildingStage AttachRequestStep(Func<TQueryModel, TPayload, HttpRequestMessage, CancellationToken, Task> stepAction)
-			=> AttachStepTo(new RequestStepAction<TQueryModel, TPayload>(stepAction), _requestSteps, AfterDeserializationBuildingStage);
+			=> AttachRequestStep(new RequestStepAction<TQueryModel, TPayload>(stepAction));
 
 		public TAfterDeserializationBuildingStage AttachResponseStep(IResponseStep<TQueryModel, TPayload, TResult> step)
 			=> AttachStepTo(step, _responseSteps, AfterDeserializationBuildingStage);
 
 		public TAfterDeserializationBuildingStage AttachResponseStep(Func<TQueryModel, TPayload, TResult, HttpRequestMessage, HttpResponseMessage, CancellationToken, Task<TResult>> action)
-			=> AttachStepTo(new ResponseStepAction<TQueryModel, TPayload, TResult>(action), _responseSteps, AfterDeserializationBuildingStage);
+			=> AttachResponseStep(new ResponseStepAction<TQueryModel, TPayload, TResult>(action));
 
 		public new TAfterQueryBuildingStage WithoutQuery()
 			=> WithQueryConstructionStep(new EmptyQueryConstructionStep<TQueryModel>());
@@ -301,7 +318,7 @@ namespace HttPipe
 			=> SetStepTo(queryConstructionStep, ref _queryConstructionStep, AfterQueryBuildingStage);
 
 		public TAfterQueryBuildingStage WithQueryConstructionStep(Func<TQueryModel, HttpRequestMessage, CancellationToken, Task> queryConstructionAction)
-			=> SetStepTo(new QueryConstructionStepAction<TQueryModel>(queryConstructionAction), ref _queryConstructionStep, AfterQueryBuildingStage);
+			=> WithQueryConstructionStep(new QueryConstructionStepAction<TQueryModel>(queryConstructionAction));
 
 		protected IQueryConstructionStep<TQueryModel> GetQueryConstructionStep()
 		{
@@ -319,6 +336,8 @@ namespace HttPipe
 
 		protected new HttpPipeline<TQueryModel, TPayload, TResult> CreatePipeline()
 		{
+			AssertBuildingDone();
+
 			return new HttpPipeline<TQueryModel, TPayload, TResult>(
 				CreateHttpClient(),
 				CreateHttpRequestFactory(),
