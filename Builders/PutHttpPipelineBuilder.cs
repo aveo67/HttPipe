@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace HttPipe
 {
-	internal class PutHttpPipelineBuilder<TPayload, TResult> : HttpPipelineBuilder<TPayload, TResult, ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TPayload, TResult>>, ICompletionBuildingStage<TPayload, TResult>>, ICompletionBuildingStage<TPayload, TResult>, IPutHttpPipelineBuilder<TPayload, TResult>
+	internal class PutHttpPipelineBuilder<TPayload, TResult> : HttpPipelineBuilder<TPayload, TResult, ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TPayload, TResult>>, ICompletionBuildingStage<TPayload, TResult>>, ICompletionBuildingStage<TPayload, TResult>, IPutHttpPipelineBuilder<TPayload, TResult>, IHttpPipelineFactory<IPutHttpPipeline<TPayload, TResult>>
 	{
 		protected override ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TPayload, TResult>> AfterAuthenticationBuildingStage => this;
 
@@ -21,7 +21,7 @@ namespace HttPipe
 		}
 	}
 
-	internal class PutHttpPipelineBuilder<TQueryModel, TPayload, TResult> : HttpPipelineBuilder<TQueryModel, TPayload, TResult, IQueryBuildingStage<TQueryModel, ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TQueryModel, TPayload, TResult>>>, ICompletionBuildingStage<TQueryModel, TPayload, TResult>, ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TQueryModel, TPayload, TResult>>>, ICompletionBuildingStage<TQueryModel, TPayload, TResult>, IPutHttpPipelineBuilder<TQueryModel, TPayload, TResult>
+	internal class PutHttpPipelineBuilder<TQueryModel, TPayload, TResult> : HttpPipelineBuilder<TQueryModel, TPayload, TResult, IQueryBuildingStage<TQueryModel, ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TQueryModel, TPayload, TResult>>>, ICompletionBuildingStage<TQueryModel, TPayload, TResult>, ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TQueryModel, TPayload, TResult>>>, ICompletionBuildingStage<TQueryModel, TPayload, TResult>, IPutHttpPipelineBuilder<TQueryModel, TPayload, TResult>, IHttpPipelineFactory<IPutHttpPipeline<TQueryModel, TPayload, TResult>>
 	{
 		protected override ISerializationBuildingStage<TPayload, TResult, ICompletionBuildingStage<TQueryModel, TPayload, TResult>> AfterQueryBuildingStage => this;
 

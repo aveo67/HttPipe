@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace HttPipe
 {
-	internal class GetHttpPipelineBuilder<TResult> : CustomHttpPipelineBuilder<TResult>, IGetHttpPipelineBuilder<TResult>
+	internal class GetHttpPipelineBuilder<TResult> : CustomHttpPipelineBuilder<TResult>, IGetHttpPipelineBuilder<TResult>, IHttpPipelineFactory<IGetHttpPipeline<TResult>>
 	{
 		public IAuthenticationBuildingStage<IDeserializationBuildingStage<TResult, ICompletionBuildingStage<TResult>>> Configure(string url, TimeSpan timeout = default)
 			=> Configure(url, HttpMethod.Get, timeout);
@@ -17,7 +17,7 @@ namespace HttPipe
 		}
 	}
 
-	internal class GetHttpPipelineBuilder<TQueryModel, TResult> : HttpPipelineBuilder<TQueryModel, TResult, IQueryBuildingStage<TQueryModel, IDeserializationBuildingStage<TResult, ICompletionBuildingStage<TQueryModel, TResult>>>, ICompletionBuildingStage<TQueryModel, TResult>>, ICompletionBuildingStage<TQueryModel, TResult>, IGetHttpPipelineBuilder<TQueryModel, TResult>
+	internal class GetHttpPipelineBuilder<TQueryModel, TResult> : HttpPipelineBuilder<TQueryModel, TResult, IQueryBuildingStage<TQueryModel, IDeserializationBuildingStage<TResult, ICompletionBuildingStage<TQueryModel, TResult>>>, ICompletionBuildingStage<TQueryModel, TResult>>, ICompletionBuildingStage<TQueryModel, TResult>, IGetHttpPipelineBuilder<TQueryModel, TResult>, IHttpPipelineFactory<IGetHttpPipeline<TQueryModel, TResult>>
 	{
 		protected override IQueryBuildingStage<TQueryModel, IDeserializationBuildingStage<TResult, ICompletionBuildingStage<TQueryModel, TResult>>> AfterAuthenticationBuildingStage => this;
 

@@ -1,6 +1,6 @@
 ﻿namespace HttPipe
 {
-	public interface IHttpPipelineFactory<TPipeline>
+	internal interface IHttpPipelineFactory<TPipeline>
 	{
 		TPipeline Create();
 	}
