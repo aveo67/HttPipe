@@ -64,13 +64,13 @@ Auth(Шаг аутентификации)
 QC(Шаг составления строки запроса)
 S(Шаг сериализации)
 ReqSt0{{Все дополнительные шаги IRequestStep}}
-ReqSt1{{Все дополнительные шаги IRequestStep<TPayload>}}
-ReqSt2{{Все дополнительные шаги IRequestStep<TQueryModel, TPayload>}}
+ReqSt1{{Все дополнительные шаги IRequestStep\&lt;TPayload>}}
+ReqSt2{{Все дополнительные шаги IRequestStep\&lt;TQueryModel, TPayload>}}
 Http[[Вызов HttpClient.SendAsync]]
 D(Шаг извлечения данных)
-RspSt0{{Все дополнительные шаги IResponseStep<TResult>}}
-RspSt1{{Все дополнительные шаги IResponseStep<TPayload, TResult>}}
-RspSt2{{Все дополнительные шаги IResponseStep<TQueryModel, TPayload, TResult>}}
+RspSt0{{Все дополнительные шаги IResponseStep\&lt;TResult>}}
+RspSt1{{Все дополнительные шаги IResponseStep\&lt;TPayload, TResult>}}
+RspSt2{{Все дополнительные шаги IResponseStep\&lt;TQueryModel, TPayload, TResult>}}
 End([Возвращение результата])
 InvokeCustom --> Auth
 InvokePost --> Auth
@@ -100,11 +100,11 @@ InvokeCustom([IHttpPipeline.SendAsync])
 Auth(Шаг аутентификации)
 S(Шаг сериализации расширеный)
 ReqSt0{{Все дополнительные шаги IRequestStep}}
-ReqSt1{{Все дополнительные шаги IRequestStep<TPayload>}}
+ReqSt1{{Все дополнительные шаги IRequestStep\&lt;TPayload>}}
 Http[[Вызов HttpClient.SendAsync]]
 D(Шаг извлечения данных)
-RspSt0{{Все дополнительные шаги IResponseStep<TResult>}}
-RspSt1{{Все дополнительные шаги IResponseStep<TPayload, TResult>}}
+RspSt0{{Все дополнительные шаги IResponseStep\&lt;TResult>}}
+RspSt1{{Все дополнительные шаги IResponseStep\&lt;TPayload, TResult>}}
 End([Возвращение результата])
 InvokeCustom --> Auth
 subgraph "Подготовка запроса"
@@ -130,7 +130,7 @@ Auth(Шаг аутентификации)
 ReqSt0{{Все дополнительные шаги IRequestStep}}
 Http[[Вызов HttpClient.SendAsync]]
 D(Шаг извлечения данных)
-RspSt0{{Все дополнительные шаги IResponseStep<TResult>}}
+RspSt0{{Все дополнительные шаги IResponseStep\&lt;TResult>}}
 End([Возвращение результата])
 InvokeCustom --> Auth
 InvokeGet --> Auth
@@ -153,11 +153,11 @@ InvokeCustom([IHttpPipeline.GetAsync])
 Auth(Шаг аутентификации)
 QC(Шаг составления строки запроса)
 ReqSt0{{Все дополнительные шаги IRequestStep}}
-ReqSt1{{Все дополнительные шаги IRequestStep<TPayload>}}
+ReqSt1{{Все дополнительные шаги IRequestStep\&lt;TPayload>}}
 Http[[Вызов HttpClient.SendAsync]]
 D(Шаг извлечения данных)
-RspSt0{{Все дополнительные шаги IResponseStep<TResult>}}
-RspSt1{{Все дополнительные шаги IResponseStep<TPayload, TResult>}}
+RspSt0{{Все дополнительные шаги IResponseStep\&lt;TResult>}}
+RspSt1{{Все дополнительные шаги IResponseStep\&lt;TPayload, TResult>}}
 End([Возвращение результата])
 InvokeCustom --> Auth
 subgraph "Подготовка запроса"
@@ -182,11 +182,11 @@ InvokePut([IHttpPipeline.PutAsync])
 Auth(Шаг аутентификации)
 S(Шаг сериализации)
 ReqSt0{{Все дополнительные шаги IRequestStep}}
-ReqSt1{{Все дополнительные шаги IRequestStep<TPayload>}}
+ReqSt1{{Все дополнительные шаги IRequestStep\&lt;TPayload>}}
 Http[[Вызов HttpClient.SendAsync]]
 D(Шаг извлечения данных)
-RspSt0{{Все дополнительные шаги IResponseStep<TResult>}}
-RspSt1{{Все дополнительные шаги IResponseStep<TPayload, TResult>}}
+RspSt0{{Все дополнительные шаги IResponseStep\&lt;TResult>}}
+RspSt1{{Все дополнительные шаги IResponseStep\&lt;TPayload, TResult>}}
 End([Возвращение результата])
 InvokePost --> Auth
 InvokePut --> Auth
